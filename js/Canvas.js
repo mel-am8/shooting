@@ -12,15 +12,23 @@ export default class Canvas {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     // カメラ
-    this.camera = new THREE.PerspectiveCamera(60, this.w / this.h, 1, 10);
-    this.camera.position.z = 3;
+    const fov = 60;
+    const fovRad = (fov / 2) * (Math.PI / 180);
+    const dist = this.w / 2 / Math.tan(fovRad);
+    this.camera = new THREE.PerspectiveCamera(
+      fov,
+      this.w / this.h,
+      1,
+      dist * 2
+    );
+    this.camera.position.set(0, 0, 10);
 
     // シーン
     this.scene = new THREE.Scene();
 
     // ライト
     this.light = new THREE.PointLight(0x00ffff);
-    this.light.position.set(2, 2, 2);
+    this.light.position.set(0, 0, 100);
     this.scene.add(this.light);
 
     // オブジェクト
@@ -33,12 +41,13 @@ export default class Canvas {
     this.render();
   }
 
-  mouseMoved(x, y, w, h, light) {
-    this.mouse.x = x - w / 2;
-    this.mouse.y = -y + h / 2;
+  mouseMoved(x, y) {
+    this.mouse.x = x - this.w / 2;
+    this.mouse.y = -y + this.h / 2;
 
-    light.position.x = this.mouse.x;
-    light.position.y = this.mouse.y;
+    this.light.position.x = this.mouse.x;
+    this.light.position.y = this.mouse.y;
+    console.log(this.mouse.x, this.mouse.y);
   }
 
   render() {
